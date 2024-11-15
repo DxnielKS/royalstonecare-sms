@@ -16,9 +16,9 @@ COPY . .
 # Build the app
 RUN npm run build
 
-# Expose port for HTTP
-EXPOSE 443 80
+# Expose port 80 instead of 3000 since that's what we're using
+EXPOSE 80
 
-# Start the app with port mapping
-ENV PORT=3000
-CMD ["sh", "-c", "npm start -- -p 3000"]
+# Set port to 80 internally
+ENV PORT=80
+CMD ["sh", "-c", "npm start -- -p 80"]
