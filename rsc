@@ -18,7 +18,10 @@ if [ "$1" == "restart" ]; then
   docker build -t rsc-sms .
 
   echo "🚀 Running the new container..."
-  docker run -d -p 3000:80 -t rsc-sms
+  docker run -d \
+    --restart unless-stopped \
+    -p 3000:80 \
+    -t rsc-sms
 
   echo "✅ Webapp restarted successfully!"
 else
