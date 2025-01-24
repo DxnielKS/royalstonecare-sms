@@ -54,7 +54,7 @@ export default function Home() {
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label!=='Dashboard' ? 'disabled' : ''}/>
+                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label!=='Dashboard' ? 'pointer-events-none opacity-30' : ''}/>
               ))}
             </div>
           </div>
