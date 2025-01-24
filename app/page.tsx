@@ -10,6 +10,7 @@ import { cn } from "@/app/lib/utils";
 const USER_SETTINGS_AND_ACCOUNTS_DISABLED = true
 
 export default function Home() {
+
   const links = [
     {
       label: "Dashboard",
@@ -54,7 +55,7 @@ export default function Home() {
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label!=='Dashboard' ? 'pointer-events-none opacity-30' : ''}/>
+                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label!=='Dashboard' ? 'cursor-not-allowed opacity-10' : ''}/>
               ))}
             </div>
           </div>
@@ -117,7 +118,7 @@ const Dashboard = () => {
     <div className="flex flex-1">
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex gap-2">
-
+          
         </div>
         <div className="flex gap-2 flex-1">
           
@@ -125,4 +126,4 @@ const Dashboard = () => {
       </div>
     </div>
   );
-};
+}
