@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/app/lib/utils";
+import { Plus } from "lucide-react";
 
 const USER_SETTINGS_AND_ACCOUNTS_DISABLED = true
 
@@ -55,7 +56,7 @@ export default function Home() {
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label!=='Dashboard' ? 'cursor-not-allowed opacity-10' : ''}/>
+                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label !== 'Dashboard' ? 'cursor-not-allowed opacity-10' : ''} />
               ))}
             </div>
           </div>
@@ -89,7 +90,7 @@ export const Logo = () => {
       href="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <img src="favicon.jpg" alt="logos" width={30}/>
+      <img src="favicon.jpg" alt="logos" width={30} />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -107,7 +108,7 @@ export const LogoIcon = () => {
       href="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <img src="favicon.jpg" alt="logo" width={30}/>
+      <img src="favicon.jpg" alt="logo" width={30} />
     </Link>
   );
 };
@@ -117,13 +118,31 @@ const Dashboard = () => {
   return (
     <div className="flex flex-1">
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        <div className="flex gap-2">
-          
-        </div>
-        <div className="flex gap-2 flex-1">
-          
+        <div className="flex gap-2 justify-center items-center">
+          {/* New Message Button */}
+          <div className="flex flex-col items-center justify-center h-screen">
+            <PrimaryButton label={'Send New Message'} onClick={() => { }} />
+          </div>
         </div>
       </div>
     </div>
   );
+}
+
+interface PrimaryButtonProps {
+  label: string
+  onClick: () => void
+}
+
+const PrimaryButton = ({ label, onClick }: PrimaryButtonProps) => {
+  return (
+    <div className="font-bold outline-none bg-blue-500 border border-black rounded-full hover:shadow-none shadow-[-3px_3px_0_0] hover:translate-y-2 hover:-translate-x-2 duration-300 p-4">
+      <button onClick={onClick}>
+        <div className="flex gap-x-2">
+          <span>{label}</span>
+          <Plus />
+        </div>
+      </button>
+    </div>
+  )
 }
