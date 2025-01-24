@@ -1,42 +1,47 @@
 import { NextResponse } from 'next/server'
 import { z } from "zod"
 
-const TwentyPeopleResponseSchema = z.object({
+const TwentyBatchPushPeopleResponseSchema = z.object({
+
+})
+
+export const TwentyPeopleResponseSchema = z.object({
     data: z.object({
-        people: z.array(
+        customers: z.array(
             z.object({
                 id: z.string(),
-                name: z.object({
-                    firstName: z.string(),
-                    lastName: z.string()
-                }),
+                name: z.string(),
                 phones: z.object({
                     primaryPhoneNumber: z.string().nullish(),
                     primaryPhoneCountryCode: z.string().nullish()
-                }),
+                }).nullish(),
                 emails: z.object({
                     primaryEmail: z.string().nullish()
                 })
             })
         )
+    }),
+    pageInfo: z.object({
+        nextCursor: z.string().nullish()
+
     })
 })
 
 export type TwentyPeopleResponse = z.infer<typeof TwentyPeopleResponseSchema>
 
-export async function POST(request: Request) {
+export async function GET() {
+
+    const limit = 10
+
     try {
-        // Get the request body
-        const body = await request.json()
 
         // Make request to external API
-        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/people`, {
+        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers?limit=${limit}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${process.env.TWENTY_API_KEY}`
             },
-            body: JSON.stringify(body)
         })
 
         // Check if request was successful
@@ -47,10 +52,10 @@ export async function POST(request: Request) {
         // Get the response data
         const data = await response.json()
 
-        const parsedData: TwentyPeopleResponse = await TwentyPeopleResponseSchema.parse(data)
+        const parsedData: TwentyPeopleResponse = TwentyPeopleResponseSchema.parse(data)
 
         // Return successful response
-        return NextResponse.json(parsedData, { status: 201 })
+        return NextResponse.json(parsedData, { status: 200 })
 
     } catch (error) {
         // Handle any errors
@@ -60,4 +65,20 @@ export async function POST(request: Request) {
             { status: 500 }
         )
     }
+}
+
+
+export async function POST(request: Request) {
+
+    const body = await request.json()
+
+    const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/batch/customers`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.TWENTY_API_KEY}`
+        },
+        body: body
+    })
+
 }

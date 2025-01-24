@@ -1,46 +1,128 @@
+"use client";
+import React, { useState } from "react";
+import { Sidebar, SidebarBody, SidebarLink } from "@/app/components/ui/sidebar";
+import { LayoutDashboard, UserCog, Settings, LogOut } from "lucide-react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { cn } from "@/app/lib/utils";
+
+const USER_SETTINGS_AND_ACCOUNTS_DISABLED = true
+
 export default function Home() {
+  const links = [
+    {
+      label: "Dashboard",
+      href: "#",
+      icon: (
+        <LayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Profile",
+      href: "#",
+      icon: (
+        <UserCog className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Settings",
+      href: "#",
+      icon: (
+        <Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Logout",
+      href: "#",
+      icon: (
+        <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+  ];
+  const [open, setOpen] = useState(false);
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] bg-gray-900 text-white">
-      <main className="flex flex-col gap-8 row-start-2 w-full max-w-6xl">
-        <h1 className="text-4xl font-bold text-center sm:text-left">
-          Royal Stone Care SMS Marketing
-        </h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-          {/* Customer List Section */}
-          <div className="border border-gray-700 rounded-lg p-4 bg-gray-800 shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Customers</h2>
-            <div className="space-y-2 max-h-[500px] overflow-y-auto">
-              {/* Example customers - replace with real data */}
-              {['John Doe', 'Jane Smith', 'Bob Johnson'].map((customer) => (
-                <div key={customer} className="flex items-center gap-3 p-2 hover:bg-gray-700 rounded">
-                  <input 
-                    type="checkbox"
-                    className="w-4 h-4 rounded border-gray-600 bg-gray-700 checked:bg-blue-600"
-                  />
-                  <span>{customer}</span>
-                </div>
+    <div
+      className={cn(
+        "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
+        "h-screen" // for your use case, use `h-screen` instead of `h-[60vh]`
+      )}
+    >
+      <Sidebar open={open} setOpen={setOpen}>
+        <SidebarBody className="justify-between gap-10">
+          <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+            {open ? <Logo /> : <LogoIcon />}
+            <div className="mt-8 flex flex-col gap-2">
+              {links.map((link, idx) => (
+                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label!=='Dashboard' ? 'disabled' : ''}/>
               ))}
             </div>
           </div>
-
-          {/* Message Section */}
-          <div className="border border-gray-700 rounded-lg p-4 bg-gray-800 shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Compose Message</h2>
-            <div className="flex flex-col gap-4">
-              <textarea 
-                className="w-full h-40 p-3 border border-gray-700 rounded-lg resize-none bg-gray-700 text-white placeholder-gray-400"
-                placeholder="Type your message here..."
-              />
-              <button 
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors self-end"
-              >
-                Send Message
-              </button>
-            </div>
+          <div>
+            <SidebarLink
+              link={{
+                label: "Farid",
+                href: "#",
+                icon: (
+                  <Image
+                    src="/globe.svg"
+                    className="h-7 w-7 flex-shrink-0 rounded-full"
+                    width={50}
+                    height={50}
+                    alt="Avatar"
+                  />
+                ),
+              }}
+            />
           </div>
-        </div>
-      </main>
+        </SidebarBody>
+      </Sidebar>
+      <Dashboard />
     </div>
   );
 }
+
+export const Logo = () => {
+  return (
+    <Link
+      href="#"
+      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+    >
+      <img src="favicon.jpg" alt="logos" width={30}/>
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="font-medium text-black dark:text-white whitespace-pre"
+      >
+        Royal Stone Care
+      </motion.span>
+    </Link>
+  );
+};
+
+export const LogoIcon = () => {
+  return (
+    <Link
+      href="#"
+      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+    >
+      <img src="favicon.jpg" alt="logo" width={30}/>
+    </Link>
+  );
+};
+
+// Dummy dashboard component with content
+const Dashboard = () => {
+  return (
+    <div className="flex flex-1">
+      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
+        <div className="flex gap-2">
+
+        </div>
+        <div className="flex gap-2 flex-1">
+          
+        </div>
+      </div>
+    </div>
+  );
+};
