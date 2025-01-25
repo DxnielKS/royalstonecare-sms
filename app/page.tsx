@@ -4,9 +4,9 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/app/components/ui/sidebar";
 import { LayoutDashboard, UserCog, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { cn } from "@/app/lib/utils";
-import { Plus } from "lucide-react";
+import { Plus, Users, User } from "lucide-react";
+import { CustomerDataTable } from "./components/customer-table";
 
 const USER_SETTINGS_AND_ACCOUNTS_DISABLED = true
 
@@ -47,7 +47,7 @@ export default function Home() {
     <div
       className={cn(
         "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
-        "h-screen" // for your use case, use `h-screen` instead of `h-[60vh]`
+        "h-screen"
       )}
     >
       <Sidebar open={open} setOpen={setOpen}>
@@ -66,13 +66,7 @@ export default function Home() {
                 label: "Farid",
                 href: "#",
                 icon: (
-                  <Image
-                    src="/globe.svg"
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    width={50}
-                    height={50}
-                    alt="Avatar"
-                  />
+                  <User />
                 ),
               }}
             />
@@ -113,35 +107,42 @@ export const LogoIcon = () => {
   );
 };
 
-// Dummy dashboard component with content
 const Dashboard = () => {
+  const [newMessageModalShowing, setNewMessageCustomersModalShowing] = useState(false);
+
   return (
     <div className="flex flex-1">
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        <div className="flex gap-2 justify-center items-center">
-          {/* New Message Button */}
-          <div className="flex flex-col items-center justify-center h-screen">
-            <PrimaryButton label={'Send New Message'} onClick={() => { }} />
+        <div className="flex flex-col gap-2 justify-center items-center">
+          <CustomerDataTable />
+          <div className="flex items-center justify-center space-x-4">
+            <PrimaryButton label={'Add Customer(s)'} onClick={() => { }} logo={<Users />} />
+            <PrimaryButton label={'New Message'} onClick={() => { setNewMessageCustomersModalShowing(true) }} logo={<Plus />} />
           </div>
         </div>
       </div>
     </div>
   );
+
 }
 
 interface PrimaryButtonProps {
   label: string
   onClick: () => void
+  href?: string
+  logo?: React.ReactNode;
 }
 
-const PrimaryButton = ({ label, onClick }: PrimaryButtonProps) => {
+const PrimaryButton = ({ label, onClick, logo, href }: PrimaryButtonProps) => {
   return (
-    <div className="font-bold outline-none bg-blue-500 border border-black rounded-full hover:shadow-none shadow-[-3px_3px_0_0] hover:translate-y-2 hover:-translate-x-2 duration-300 p-4">
+    <div className="font-bold outline-none bg-blue-500 border border-black rounded-full hover:shadow-none shadow-[-3px_3px_0_0] hover:translate-y-2 hover:-translate-x-2 duration-300">
       <button onClick={onClick}>
-        <div className="flex gap-x-2">
-          <span>{label}</span>
-          <Plus />
-        </div>
+        <a href={href}>
+          <div className="flex gap-x-4 items-center justify-center p-4">
+            {logo}
+            <span>{label}</span>
+          </div>
+        </a>
       </button>
     </div>
   )

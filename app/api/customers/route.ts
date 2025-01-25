@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { z } from "zod"
 
-const TwentyBatchPushPeopleResponseSchema = z.object({
+// const TwentyBatchPushPeopleResponseSchema = z.object({
 
-})
+// })
 
 export const TwentyPeopleResponseSchema = z.object({
     data: z.object({
@@ -23,7 +23,6 @@ export const TwentyPeopleResponseSchema = z.object({
     }),
     pageInfo: z.object({
         nextCursor: z.string().nullish()
-
     })
 })
 
@@ -68,17 +67,17 @@ export async function GET() {
 }
 
 
-export async function POST(request: Request) {
+// export async function POST(request: Request) {
 
-    const body = await request.json()
+//     const body = await request.json()
 
-    const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/batch/customers`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.TWENTY_API_KEY}`
-        },
-        body: body
-    })
+//     const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/batch/customers`, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Bearer ${process.env.TWENTY_API_KEY}`
+//         },
+//         body: body
+//     })
 
-}
+// }
