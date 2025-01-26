@@ -1,19 +1,16 @@
 import { NextResponse } from 'next/server'
 import { z } from "zod"
 
-// const TwentyBatchPushPeopleResponseSchema = z.object({
-
-// })
-
 const TwentyPeopleResponseSchema = z.object({
     data: z.object({
         customers: z.array(
             z.object({
                 id: z.string(),
                 name: z.string(),
-                phones: z.object({
+                numbers: z.object({
                     primaryPhoneNumber: z.string().nullish(),
-                    primaryPhoneCountryCode: z.string().nullish()
+                    primaryPhoneCountryCode: z.string().nullish(),
+                    primaryPhoneCallingCode: z.string().nullish()
                 }).nullish(),
                 emails: z.object({
                     primaryEmail: z.string().nullish()
@@ -37,8 +34,6 @@ export async function GET(request: Request) {
 
     const starting_after = query.get('starting_from') ? query.get('starting_from') : ''
 
-    console.log('starting!')
-    console.log(starting_after)
     try {
 
         // Make request to external API
@@ -62,6 +57,8 @@ export async function GET(request: Request) {
 
         const parsedData: TwentyPeopleResponse = TwentyPeopleResponseSchema.parse(data)
 
+        console.log(parsedData.data.customers)
+
         // Return successful response
         return NextResponse.json(parsedData, { status: 200 })
 
@@ -74,19 +71,3 @@ export async function GET(request: Request) {
         )
     }
 }
-
-
-// export async function POST(request: Request) {
-
-//     const body = await request.json()
-
-//     const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/batch/customers`, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${process.env.TWENTY_API_KEY}`
-//         },
-//         body: body
-//     })
-
-// }
