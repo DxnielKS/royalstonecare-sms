@@ -6,11 +6,20 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/app/lib/utils";
 import { Plus, Users, User } from "lucide-react";
-import { CustomerDataTable } from "./components/customer-table";
+import { Customer, CustomerDataTable } from "./components/customer-table";
 
 const USER_SETTINGS_AND_ACCOUNTS_DISABLED = true
 
 export default function Home() {
+
+  const customers: Customer[] = [
+    {
+      name: 'Daniel Saisani',
+      email: 'daniel@digilaunch.org',
+      id: '1',
+      number: '07799974853'
+    }
+  ]
 
   const links = [
     {
@@ -42,7 +51,9 @@ export default function Home() {
       ),
     },
   ];
+
   const [open, setOpen] = useState(false);
+
   return (
     <div
       className={cn(
@@ -73,7 +84,7 @@ export default function Home() {
           </div>
         </SidebarBody>
       </Sidebar>
-      <Dashboard />
+      <Dashboard customers={customers} />
     </div>
   );
 }
@@ -107,7 +118,11 @@ const LogoIcon = () => {
   );
 };
 
-const Dashboard = () => {
+interface DashboardProps {
+  customers: Customer[]
+}
+
+const Dashboard = ({customers}: DashboardProps) => {
   const [newMessageModalShowing, setNewMessageCustomersModalShowing] = useState(false);
 
   return (
@@ -115,7 +130,7 @@ const Dashboard = () => {
       {newMessageModalShowing && <></>}
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex flex-col gap-2 justify-center items-center">
-          <CustomerDataTable />
+          <CustomerDataTable customers={customers} />
           <div className="flex items-center justify-center space-x-4">
             <PrimaryButton label={'Add Customer(s)'} onClick={() => { }} logo={<Users />} />
             <PrimaryButton label={'New Message'} onClick={() => { setNewMessageCustomersModalShowing(true) }} logo={<Plus />} />
