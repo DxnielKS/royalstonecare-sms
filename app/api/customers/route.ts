@@ -5,7 +5,7 @@ import { z } from "zod"
 
 // })
 
-export const TwentyPeopleResponseSchema = z.object({
+const TwentyPeopleResponseSchema = z.object({
     data: z.object({
         customers: z.array(
             z.object({
@@ -26,7 +26,7 @@ export const TwentyPeopleResponseSchema = z.object({
     })
 })
 
-export type TwentyPeopleResponse = z.infer<typeof TwentyPeopleResponseSchema>
+type TwentyPeopleResponse = z.infer<typeof TwentyPeopleResponseSchema>
 
 export async function GET() {
 
