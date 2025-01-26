@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/app/components/ui/sidebar";
 import { LayoutDashboard, UserCog, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
@@ -7,19 +7,13 @@ import { motion } from "framer-motion";
 import { cn } from "@/app/lib/utils";
 import { Plus, Users, User } from "lucide-react";
 import { Customer, CustomerDataTable } from "./components/customer-table";
+import { useCustomers } from "./api/customers-api";
+import { BeatLoader } from "react-spinners";
+
 
 const USER_SETTINGS_AND_ACCOUNTS_DISABLED = true
 
 export default function Home() {
-
-  const customers: Customer[] = [
-    {
-      name: 'Daniel Saisani',
-      email: 'daniel@digilaunch.org',
-      id: '1',
-      number: '07799974853'
-    }
-  ]
 
   const links = [
     {
@@ -84,7 +78,7 @@ export default function Home() {
           </div>
         </SidebarBody>
       </Sidebar>
-      <Dashboard customers={customers} />
+      <Dashboard />
     </div>
   );
 }
@@ -118,19 +112,42 @@ const LogoIcon = () => {
   );
 };
 
-interface DashboardProps {
-  customers: Customer[]
-}
 
-const Dashboard = ({customers}: DashboardProps) => {
+const Dashboard = () => {
+  // Fetch customers
+  const [customers, setCustomers] = useState<Customer[]>([])
+  const [lastCursor, setLastCursor] = useState<string | null>(null)
+  const [hasNextPage, setHasNextPage] = useState(true)
   const [newMessageModalShowing, setNewMessageCustomersModalShowing] = useState(false);
+  const [requestBeingMade, setRequestBeingMade] = useState(true)
+
+  const updateCustomerList = (lastCursor: string | null) => {
+    useCustomers(lastCursor).then(async (customersResponse) => {
+      setRequestBeingMade(true)
+      setCustomers([...customers, ...customersResponse.customers])
+      setLastCursor(customersResponse.ending_cursor)
+      setHasNextPage(customersResponse.has_next_page)
+      setRequestBeingMade(false)
+    }).catch((error) => {
+      console.error(error)
+      console.error('Failed to retrieve customers!')
+      setRequestBeingMade(false)
+    })
+  }
+
+
+  useEffect(() => {
+    updateCustomerList(lastCursor)
+  }, [])
+
 
   return (
     <div className="flex flex-1">
       {newMessageModalShowing && <></>}
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex flex-col gap-2 justify-center items-center">
-          <CustomerDataTable customers={customers} />
+          {requestBeingMade && <div className="py-20"><BeatLoader color="white" /></div>}
+          {!requestBeingMade && <CustomerDataTable customers={customers} hasNextPage={hasNextPage} getNextCustomers={updateCustomerList} cursor={lastCursor}/>}
           <div className="flex items-center justify-center space-x-4">
             <PrimaryButton label={'Add Customer(s)'} onClick={() => { }} logo={<Users />} />
             <PrimaryButton label={'New Message'} onClick={() => { setNewMessageCustomersModalShowing(true) }} logo={<Plus />} />
@@ -139,7 +156,6 @@ const Dashboard = ({customers}: DashboardProps) => {
       </div>
     </div>
   );
-
 }
 
 interface PrimaryButtonProps {

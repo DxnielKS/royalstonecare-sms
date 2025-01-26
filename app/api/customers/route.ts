@@ -22,20 +22,27 @@ const TwentyPeopleResponseSchema = z.object({
         )
     }),
     pageInfo: z.object({
-        nextCursor: z.string().nullish()
+        endCursor: z.string().nullish(),
+        hasNextPage: z.boolean()
     })
 })
 
 type TwentyPeopleResponse = z.infer<typeof TwentyPeopleResponseSchema>
 
-export async function GET() {
+export async function GET(request: Request) {
 
-    const limit = 10
+    const limit = 50
 
+    const query = await request.headers
+
+    const starting_after = query.get('starting_from') ? query.get('starting_from') : ''
+
+    console.log('starting!')
+    console.log(starting_after)
     try {
 
         // Make request to external API
-        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers?limit=${limit}`, {
+        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers?limit=${limit}${starting_after ? `&starting_after=${starting_after}` : ""}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,6 +52,8 @@ export async function GET() {
 
         // Check if request was successful
         if (!response.ok) {
+            console.error(response.status)
+            console.error(response.statusText)
             throw new Error('Failed to retrieve all customers')
         }
 

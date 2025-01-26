@@ -35,13 +35,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table"
+import { z } from "zod"
 
-export type Customer = {
-  id: string
-  name: string
-  email: string
-  number: string
-}
+export const CustomerSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  number: z.string(),
+})
+
+export type Customer = z.infer<typeof CustomerSchema>
+
+export const CustomerResponseSchema = z.object({
+  customers: z.array(CustomerSchema),
+  ending_cursor: z.string().nullable(),
+  has_next_page: z.boolean()
+})
+
+export type CustomerResponse = z.infer<typeof CustomerResponseSchema>
 
 export const columns: ColumnDef<Customer>[] = [
   {
@@ -129,8 +140,6 @@ export const columns: ColumnDef<Customer>[] = [
               Copy customer number
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View customer details</DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -140,9 +149,12 @@ export const columns: ColumnDef<Customer>[] = [
 
 interface CustomerDataTableProps {
   customers: Customer[]
+  hasNextPage: boolean
+  cursor: string | null
+  getNextCustomers: (lastCursor: string | null) => void
 }
 
-export function CustomerDataTable({ customers }: CustomerDataTableProps) {
+export function CustomerDataTable({ customers, hasNextPage, getNextCustomers , cursor}: CustomerDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -162,6 +174,11 @@ export function CustomerDataTable({ customers }: CustomerDataTableProps) {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
     state: {
       sorting,
       columnFilters,
@@ -275,8 +292,14 @@ export function CustomerDataTable({ customers }: CustomerDataTableProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => {
+              if (!table.getCanNextPage() && hasNextPage) {
+                getNextCustomers(cursor)
+              } else {
+                table.nextPage()
+              }
+            }}
+            disabled={!table.getCanNextPage() && !hasNextPage}
           >
             Next
           </Button>
