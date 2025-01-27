@@ -7,9 +7,9 @@ export const CustomerRequestResponseDataSchema = z.object({
             id: z.string(),
             name: z.string(),
             numbers: z.object({
-                primaryPhoneNumber: z.string().nullish(),
-                primaryPhoneCountryCode: z.string().nullish(),
-                primaryPhoneCallingCode: z.string().nullish()
+                primaryPhoneNumber: z.string(),
+                primaryPhoneCountryCode: z.string(),
+                primaryPhoneCallingCode: z.string()
             }).nullish(),
             emails: z.object({
                 primaryEmail: z.string().nullish()
@@ -40,7 +40,7 @@ export const useCustomers = async (cursor: string | null): Promise<CustomerRespo
             id: customer.id,
             name: customer.name,
             email: customer.emails.primaryEmail ?? '',
-            number:  customer.numbers?.primaryPhoneCallingCode! + customer.numbers?.primaryPhoneNumber ?? ''
+            number: customer.numbers ? customer.numbers.primaryPhoneCallingCode + customer.numbers.primaryPhoneNumber : ''
         })),
         ending_cursor: parsedData.pageInfo.endCursor ?? null,
         has_next_page: parsedData.pageInfo.hasNextPage

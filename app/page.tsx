@@ -9,6 +9,7 @@ import { Plus, Users, User } from "lucide-react";
 import { Customer, CustomerDataTable } from "./components/customer-table";
 import { useCustomers } from "./api/customers-api";
 import { BeatLoader } from "react-spinners";
+import { AddCustomerModal } from "./components/AddCustomerModal";
 
 
 const USER_SETTINGS_AND_ACCOUNTS_DISABLED = true
@@ -119,9 +120,10 @@ const Dashboard = () => {
   const [lastCursor, setLastCursor] = useState<string | null>(null)
   const [hasNextPage, setHasNextPage] = useState(true)
   const [newMessageModalShowing, setNewMessageCustomersModalShowing] = useState(false);
+  const [newCustomerModalShowing, setNewCustomerCustomersModalShowing] = useState(false);
   const [requestBeingMade, setRequestBeingMade] = useState(true)
 
-  const updateCustomerList = (lastCursor: string | null) => {
+  const UpdateCustomerList = (lastCursor: string | null) => {
     useCustomers(lastCursor).then(async (customersResponse) => {
       setRequestBeingMade(true)
       setCustomers([...customers, ...customersResponse.customers])
@@ -137,19 +139,20 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-    updateCustomerList(lastCursor)
+    UpdateCustomerList(lastCursor)
   }, [])
 
 
   return (
     <div className="flex flex-1">
+      {newCustomerModalShowing && <AddCustomerModal onClose={setNewCustomerCustomersModalShowing}/>}
       {newMessageModalShowing && <></>}
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex flex-col gap-2 justify-center items-center">
           {requestBeingMade && <div className="py-20"><BeatLoader color="white" /></div>}
-          {!requestBeingMade && <CustomerDataTable customers={customers} hasNextPage={hasNextPage} getNextCustomers={updateCustomerList} cursor={lastCursor}/>}
+          {!requestBeingMade && <CustomerDataTable customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} cursor={lastCursor}/>}
           <div className="flex items-center justify-center space-x-4">
-            <PrimaryButton label={'Add Customer(s)'} onClick={() => { }} logo={<Users />} />
+            <PrimaryButton label={'Add Customer(s)'} onClick={() => { setNewCustomerCustomersModalShowing(true) }} logo={<Users />} />
             <PrimaryButton label={'New Message'} onClick={() => { setNewMessageCustomersModalShowing(true) }} logo={<Plus />} />
           </div>
         </div>
@@ -167,7 +170,7 @@ interface PrimaryButtonProps {
 
 const PrimaryButton = ({ label, onClick, logo, href }: PrimaryButtonProps) => {
   return (
-    <div className="font-bold outline-none bg-blue-500 border border-black rounded-full hover:shadow-none shadow-[-3px_3px_0_0] hover:translate-y-2 hover:-translate-x-2 duration-300">
+    <div className="font-bold bg-blue-500 border border-black rounded-full hover:shadow-none shadow-[-3px_3px_0_0] hover:translate-y-2 hover:-translate-x-2 duration-300">
       <button onClick={onClick}>
         <a href={href}>
           <div className="flex gap-x-4 items-center justify-center p-4">

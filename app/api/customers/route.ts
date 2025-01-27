@@ -28,7 +28,7 @@ type TwentyPeopleResponse = z.infer<typeof TwentyPeopleResponseSchema>
 
 export async function GET(request: Request) {
 
-    const limit = 50
+    const limit = 10
 
     const query = await request.headers
 
