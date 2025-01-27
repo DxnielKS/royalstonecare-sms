@@ -64,10 +64,54 @@ export async function GET(request: Request) {
 
     } catch (error) {
         // Handle any errors
+        console.error('Error retrieving customers:', error)
+        return NextResponse.json(
+            { error: 'Failed to retrieve customers' },
+            { status: 500 }
+        )
+    }
+}
+
+export async function POST(request: Request) {
+
+    const query = await request.json()
+
+    try {
+
+        // Make request to external API
+        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.TWENTY_API_KEY}`
+            },
+            body: query
+        })
+
+        // Check if request was successful
+        if (!response.ok) {
+            console.error(response.status)
+            console.error(response.statusText)
+            throw new Error('Failed to add new customer')
+        }
+
+        // Get the response data
+        const data = await response.json()
+
+        const parsedData: TwentyPeopleResponse = TwentyPeopleResponseSchema.parse(data)
+
+        console.log(parsedData.data.customers)
+
+        // Return successful response
+        return NextResponse.json(parsedData, { status: 200 })
+
+    } catch (error) {
+        // Handle any errors
         console.error('Error creating customer:', error)
         return NextResponse.json(
             { error: 'Failed to create customer' },
             { status: 500 }
         )
     }
+
 }
