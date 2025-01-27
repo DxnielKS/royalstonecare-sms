@@ -166,7 +166,7 @@ export async function DELETE(request: Request) {
     try {
 
         // Make request to external API
-        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers/${customerId}`, {
+        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers/deleteCustomer${customerId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
