@@ -1,16 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/app/components/ui/sidebar";
-import { LayoutDashboard, UserCog, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, UserCog, Settings, LogOut, Pen } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/app/lib/utils";
-import { Plus, Users, User } from "lucide-react";
-import { Customer, CustomerDataTable } from "./components/customer-table";
-import { useCustomers } from "./api/customers-api";
+import { Users, User } from "lucide-react";
+import { Customer, CustomerCreationResponse, CustomerDataTable, NewCustomer } from "./components/customer-table";
+import { useCreateCustomer, useCustomers } from "./api/customers-api";
 import { AddCustomerModal } from "./components/AddCustomerModal";
 import { PrimaryButton } from "./components/ui/primary-button";
 import { Skeleton } from "./components/ui/skeleton";
+import { toast } from "sonner";
+import { Toaster } from "@/app/components/ui/toast";
 
 
 const USER_SETTINGS_AND_ACCOUNTS_DISABLED = true
@@ -138,6 +140,18 @@ const Dashboard = () => {
     })
   }
 
+  const CreateNewCustomer = (customer: NewCustomer): Promise<CustomerCreationResponse> => {
+    return useCreateCustomer(customer).then(async (customerResponse) => {
+      console.log(customerResponse)
+      setNewCustomerCustomersModalShowing(false);
+      return { success: true };
+    }).catch((error) => {
+      setNewCustomerCustomersModalShowing(false);
+      console.log(error);
+      return { success: false };
+    });
+  }
+
   useEffect(() => {
     UpdateCustomerList(lastCursor)
   }, [])
@@ -145,15 +159,39 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-1">
-      {newCustomerModalShowing && <AddCustomerModal onClose={setNewCustomerCustomersModalShowing} onSubmit={()=>{}}/>}
+      {/* Toaster provider at Dashboard level */}
+      <Toaster />
+      {newCustomerModalShowing && <AddCustomerModal onClose={setNewCustomerCustomersModalShowing} onSubmit={(customer) => {
+        const completeCustomer = {
+          phoneExtension: customer.phone_extension,
+          number: customer.phone,
+          name: customer.name,
+          email: customer.email,
+        };
+
+        toast.promise(
+          CreateNewCustomer(completeCustomer).then((result) => {
+            if (result.success) {
+              return result; // Return the result for success
+            } else {
+              throw new Error("Failed to add customer"); // Throw an error for failure
+            }
+          }),
+          {
+            loading: "Adding customer...",
+            success: "Customer added",
+            error: "Failed to add customer",
+          }
+        );
+      }} />}
       {newMessageModalShowing && <></>}
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex flex-col gap-2 justify-center items-center">
-          {requestBeingMade && <div className="py-20"><Skeleton className="w-full h-full"/></div>}
-          {!requestBeingMade && <CustomerDataTable customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} cursor={lastCursor}/>}
+          {requestBeingMade && <div className="py-20 w-full"><Skeleton className="w-full h-[10rem]"/></div>}
+          {!requestBeingMade && <CustomerDataTable customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} cursor={lastCursor} />}
           <div className="flex items-center justify-center space-x-4">
             <PrimaryButton label={'Add Customer(s)'} onClick={() => { setNewCustomerCustomersModalShowing(true) }} logo={<Users />} />
-            <PrimaryButton label={'New Message'} onClick={() => { setNewMessageCustomersModalShowing(true) }} logo={<Plus />} />
+            <PrimaryButton disabled={true} label={'New Message'} onClick={() => { setNewMessageCustomersModalShowing(true) }} logo={<Pen />} />
           </div>
         </div>
       </div>

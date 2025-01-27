@@ -1,4 +1,4 @@
-import { CustomerResponse } from "../components/customer-table";
+import { CustomerCreationResponse, CustomerCreationResponseSchema, CustomerResponse, NewCustomer } from "../components/customer-table";
 import { z } from "zod";
 
 export const CustomerRequestResponseDataSchema = z.object({
@@ -44,5 +44,20 @@ export const useCustomers = async (cursor: string | null): Promise<CustomerRespo
         })),
         ending_cursor: parsedData.pageInfo.endCursor ?? null,
         has_next_page: parsedData.pageInfo.hasNextPage
+    }
+}
+
+export const useCreateCustomer = async (customer: NewCustomer): Promise<CustomerCreationResponse> => {
+    const response = await fetch(`/api/customers`, {
+        method: 'POST',
+        body: JSON.stringify(customer)
+    })
+
+    const data = await response.json()
+
+    const parsedData = CustomerCreationResponseSchema.parse(data)
+
+    return {
+       success: parsedData.success
     }
 }

@@ -37,6 +37,15 @@ import {
 } from "@/app/components/ui/table"
 import { z } from "zod"
 
+export const NewCustomerSchema = z.object({
+  name: z.string(),
+  email: z.string(),
+  number: z.string(),
+  phoneExtension: z.string(),
+})
+
+export type NewCustomer = z.infer<typeof NewCustomerSchema>
+
 export const CustomerSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -53,6 +62,12 @@ export const CustomerResponseSchema = z.object({
 })
 
 export type CustomerResponse = z.infer<typeof CustomerResponseSchema>
+
+export const CustomerCreationResponseSchema = z.object({
+  success: z.boolean()
+})
+
+export type CustomerCreationResponse = z.infer<typeof CustomerCreationResponseSchema> 
 
 export const columns: ColumnDef<Customer>[] = [
   {
@@ -113,7 +128,7 @@ export const columns: ColumnDef<Customer>[] = [
       const customer = row.original
 
       return (
-        <DropdownMenu>
+        <DropdownMenu >
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>

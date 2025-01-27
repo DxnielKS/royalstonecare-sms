@@ -1,3 +1,4 @@
+import { NewCustomer } from '@/app/components/customer-table'
 import { NextResponse } from 'next/server'
 import { z } from "zod"
 
@@ -72,9 +73,50 @@ export async function GET(request: Request) {
     }
 }
 
+// const TwentyCreateCustomerBodySchema = z.object({
+//     name: z.string(),
+//     createdBy: z.object({
+//         source: z.literal("MANUAL")
+//     }),
+//     position: z.number(),
+//     numbers: z.object({
+//         additionalPhones: z.array(z.string()),
+//         primaryPhoneCountryCode: z.string(),
+//         primaryPhoneCallingCode: z.string(),
+//         primaryPhoneNumber: z.string(),
+
+//     }),
+//     emails: z.object({
+//         primaryEmail: z.string(),
+//         addiionalEmails: z.array(z.string())
+//     })
+// })
+
+// export type TwentyCreateCustomerBody = z.infer<typeof TwentyCreateCustomerBodySchema>
+
 export async function POST(request: Request) {
 
-    const query = await request.json()
+    const query = await request.json() as unknown as NewCustomer
+
+    console.log(query)
+
+    const constructedBody = {
+        name: query.name,
+        createdBy: {
+            source: "MANUAL"
+        },
+        position: 0,
+        numbers: {
+            additionalPhones: [],
+            primaryPhoneCountryCode: query.phoneExtension,
+            primaryPhoneCallingCode: '',
+            primaryPhoneNumber: query.number
+        },
+        emails: {
+            primaryEmail: query.email,
+            additionalEmails: []
+        }
+    }
 
     try {
 
@@ -85,7 +127,7 @@ export async function POST(request: Request) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${process.env.TWENTY_API_KEY}`
             },
-            body: query
+            body: JSON.stringify(constructedBody)
         })
 
         // Check if request was successful
@@ -95,21 +137,14 @@ export async function POST(request: Request) {
             throw new Error('Failed to add new customer')
         }
 
-        // Get the response data
-        const data = await response.json()
-
-        const parsedData: TwentyPeopleResponse = TwentyPeopleResponseSchema.parse(data)
-
-        console.log(parsedData.data.customers)
-
         // Return successful response
-        return NextResponse.json(parsedData, { status: 200 })
+        return NextResponse.json({success: true}, { status: 200 })
 
     } catch (error) {
         // Handle any errors
         console.error('Error creating customer:', error)
         return NextResponse.json(
-            { error: 'Failed to create customer' },
+            { error: 'Failed to create customer', success: false },
             { status: 500 }
         )
     }

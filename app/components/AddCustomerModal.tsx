@@ -14,7 +14,7 @@ import {
 
 interface AddCustomerModalProps {
     onClose: (closed: boolean) => void
-    onSubmit: (data: { name: string; email: string; phone: string }) => void
+    onSubmit: (data: { name: string; email: string; phone: string, phone_extension: string }) => void
 }
 
 export function AddCustomerModal({ onClose, onSubmit }: AddCustomerModalProps) {
@@ -22,7 +22,7 @@ export function AddCustomerModal({ onClose, onSubmit }: AddCustomerModalProps) {
         name: "",
         email: "",
         phone: "",
-        countryCode: "+1" // Default to US/Canada
+        countryCode: "+44" // Default to UK
     })
 
     const [errors, setErrors] = useState({
@@ -98,7 +98,8 @@ export function AddCustomerModal({ onClose, onSubmit }: AddCustomerModalProps) {
             onSubmit({
                 name: formData.name,
                 email: formData.email,
-                phone: `${formData.countryCode}${formData.phone.replace(/\D/g, "")}` // Clean format and add country code
+                phone: formData.phone.replace(/\D/g, ""), // Clean format and add country code
+                phone_extension: formData.countryCode
             })
             onClose(true)
         }
