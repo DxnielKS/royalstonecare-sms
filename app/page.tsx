@@ -6,8 +6,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/app/lib/utils";
 import { Users, User } from "lucide-react";
-import { Customer, CustomerCreationResponse, CustomerDataTable, NewCustomer } from "./components/customer-table";
-import { useCreateCustomer, useCustomers } from "./api/customers-api";
+import { Customer, CustomerCreationResponse, CustomerDataTable, CustomerDeletionResponse, NewCustomer } from "./components/customer-table";
+import { useCreateCustomer, useCustomers, useDeleteCustomer } from "./api/customers-api";
 import { AddCustomerModal } from "./components/AddCustomerModal";
 import { PrimaryButton } from "./components/ui/primary-button";
 import { Skeleton } from "./components/ui/skeleton";
@@ -141,12 +141,20 @@ const Dashboard = () => {
   }
 
   const CreateNewCustomer = (customer: NewCustomer): Promise<CustomerCreationResponse> => {
-    return useCreateCustomer(customer).then(async (customerResponse) => {
-      console.log(customerResponse)
+    return useCreateCustomer(customer).then(async () => {
       setNewCustomerCustomersModalShowing(false);
       return { success: true };
     }).catch((error) => {
       setNewCustomerCustomersModalShowing(false);
+      console.log(error);
+      return { success: false };
+    });
+  }
+
+  const DeleteCustomer = (customerId: string): Promise<CustomerDeletionResponse> => {
+    return useDeleteCustomer(customerId).then(async () => {
+      return { success: true };
+    }).catch((error) => {
       console.log(error);
       return { success: false };
     });
@@ -174,7 +182,7 @@ const Dashboard = () => {
             if (result.success) {
               return result; // Return the result for success
             } else {
-              throw new Error("Failed to add customer"); // Throw an error for failure
+              throw new Error("Failed to add customer"); // Throw an error for failures
             }
           }),
           {
@@ -187,8 +195,26 @@ const Dashboard = () => {
       {newMessageModalShowing && <></>}
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex flex-col gap-2 justify-center items-center">
-          {requestBeingMade && <div className="py-20 w-full"><Skeleton className="w-full h-[10rem]"/></div>}
-          {!requestBeingMade && <CustomerDataTable customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} cursor={lastCursor} />}
+          {requestBeingMade && <div className="py-20 w-full"><Skeleton className="w-full h-[10rem]" /></div>}
+          {!requestBeingMade && <CustomerDataTable customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} cursor={lastCursor} deleteCustomer={
+            (customerId) => {
+
+              toast.promise(
+                DeleteCustomer(customerId).then((result) => {
+                  if (result.success) {
+                    return result; // Return the result for success
+                  } else {
+                    throw new Error("Failed to delete customer"); // Throw an error for failures
+                  }
+                }),
+                {
+                  loading: "Deleting customer...",
+                  success: "Customer deleted",
+                  error: "Failed to delete customer",
+                }
+              );
+            }
+          } />}
           <div className="flex items-center justify-center space-x-4">
             <PrimaryButton label={'Add Customer(s)'} onClick={() => { setNewCustomerCustomersModalShowing(true) }} logo={<Users />} />
             <PrimaryButton disabled={true} label={'New Message'} onClick={() => { setNewMessageCustomersModalShowing(true) }} logo={<Pen />} />

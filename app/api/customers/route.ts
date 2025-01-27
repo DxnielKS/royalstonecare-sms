@@ -138,13 +138,57 @@ export async function POST(request: Request) {
         }
 
         // Return successful response
-        return NextResponse.json({success: true}, { status: 200 })
+        return NextResponse.json({ success: true }, { status: 200 })
 
     } catch (error) {
         // Handle any errors
         console.error('Error creating customer:', error)
         return NextResponse.json(
             { error: 'Failed to create customer', success: false },
+            { status: 500 }
+        )
+    }
+
+}
+
+export async function DELETE(request: Request) {
+
+    const headers = request.headers
+
+    const customerId = headers.get('customerId')
+
+    if (!customerId) {
+
+        throw Error("CustomerID must be provided when trying to delete customer")
+
+    }
+
+    try {
+
+        // Make request to external API
+        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers/${customerId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.TWENTY_API_KEY}`
+            },
+        })
+
+        // Check if request was successful
+        if (!response.ok) {
+            console.error(response.status)
+            console.error(response.statusText)
+            throw new Error('Failed to delete customer')
+        }
+
+        // Return successful response
+        return NextResponse.json({ success: true }, { status: 200 })
+
+    } catch (error) {
+        // Handle any errors
+        console.error('Error deleting customer:', error)
+        return NextResponse.json(
+            { error: 'Failed to delete customer', success: false },
             { status: 500 }
         )
     }
