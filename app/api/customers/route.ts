@@ -157,6 +157,8 @@ export async function DELETE(request: Request) {
 
     const customerId = headers.get('customerId')
 
+    console.log(customerId)
+
     if (!customerId) {
 
         throw Error("CustomerID must be provided when trying to delete customer")
@@ -166,7 +168,7 @@ export async function DELETE(request: Request) {
     try {
 
         // Make request to external API
-        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers/deleteCustomer${customerId}`, {
+        const response = await fetch(`${process.env.TWENTY_API_BASE_URL}/customers/${customerId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
