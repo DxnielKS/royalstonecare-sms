@@ -78,6 +78,8 @@ export type CustomerDeletionResponse = z.infer<typeof CustomerDeletionResponseSc
 
 
 interface CustomerDataTableProps {
+  currentPageNumber: number
+  setPageNumber: (pageNumber: number) => void
   customers: Customer[]
   hasNextPage: boolean
   cursor: string | null
@@ -85,7 +87,7 @@ interface CustomerDataTableProps {
   deleteCustomer: (customerId: string) => void
 }
 
-export function CustomerDataTable({ customers, hasNextPage, getNextCustomers, deleteCustomer, cursor }: CustomerDataTableProps) {
+export function CustomerDataTable({currentPageNumber, setPageNumber, customers, hasNextPage, getNextCustomers, deleteCustomer, cursor }: CustomerDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -93,6 +95,13 @@ export function CustomerDataTable({ customers, hasNextPage, getNextCustomers, de
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  // DEBUG LOGS
+  console.log(`Customers in table: ${customers}`)
+  console.log(`Number of customers: ${customers.length}`)
+  console.log(`Has next page: ${hasNextPage}`)
+  console.log(`Cursor: ${cursor}`)
+  console.log(`Current page number: ${currentPageNumber}`)
 
   const columns: ColumnDef<Customer>[] = [
     {
@@ -207,6 +216,7 @@ export function CustomerDataTable({ customers, hasNextPage, getNextCustomers, de
     initialState: {
       pagination: {
         pageSize: 10,
+        pageIndex: currentPageNumber - 1, // Convert 1-based to 0-based index
       },
     },
     state: {
@@ -214,6 +224,10 @@ export function CustomerDataTable({ customers, hasNextPage, getNextCustomers, de
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: {
+        pageSize: 10,
+        pageIndex: currentPageNumber - 1, // Keep in sync with current page
+      },
     },
   })
 
@@ -314,7 +328,10 @@ export function CustomerDataTable({ customers, hasNextPage, getNextCustomers, de
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
+            onClick={() => {
+              table.previousPage()
+              setPageNumber(currentPageNumber - 1)
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             Previous
@@ -322,11 +339,15 @@ export function CustomerDataTable({ customers, hasNextPage, getNextCustomers, de
           <Button
             variant="outline"
             size="sm"
-            onClick={() => {
+            onClick={async () => {
+              // if we can't go to the next page and there is a next page, fetch the next customers
               if (!table.getCanNextPage() && hasNextPage) {
-                getNextCustomers(cursor)
-              } else {
+                await getNextCustomers(cursor)
+                setPageNumber(currentPageNumber + 1)
+              }
+              else {
                 table.nextPage()
+                setPageNumber(currentPageNumber + 1)
               }
             }}
             disabled={!table.getCanNextPage() && !hasNextPage}
