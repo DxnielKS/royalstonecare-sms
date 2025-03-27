@@ -35,6 +35,9 @@ export async function GET(request: Request) {
 
     const starting_after = query.get('starting_from') ? query.get('starting_from') : ''
 
+    console.log(`Starting after: ${starting_after}`)
+    console.log(`Limit: ${limit}`)
+
     try {
 
         // Make request to external API
