@@ -26,12 +26,13 @@ export type CustomerRequestResponseData = z.infer<typeof CustomerRequestResponse
 
 export const useCustomers = async (cursor: string | null): Promise<CustomerResponse> => {
     console.log(`Hook making new request with cursor: ${cursor}`)
-    const response = await fetch(`/api/customers`, {
-        method: 'GET',
-        headers: {
-            'starting_from': cursor ?? ''
-        }
-    })
+
+    const params = new URLSearchParams();
+    if (cursor) {
+        params.set('starting_from', cursor);
+    }
+
+    const response = await fetch(`/api/customers?${params.toString()}`)
 
     const data = await response.json()
     const parsedData = CustomerRequestResponseDataSchema.parse(data)

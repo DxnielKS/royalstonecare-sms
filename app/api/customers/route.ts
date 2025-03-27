@@ -31,9 +31,8 @@ export async function GET(request: Request) {
 
     const limit = 10
 
-    const query = request.headers
-
-    const starting_after = query.get('starting_from') ? query.get('starting_from') : ''
+    const { searchParams } = new URL(request.url);
+    const starting_after = searchParams.get('starting_from') || '';
 
     console.log(`Starting after: ${starting_after}`)
     console.log(`Limit: ${limit}`)
