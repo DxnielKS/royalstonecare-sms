@@ -95,6 +95,7 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [loadingCustomers, setLoadingCustomers] = React.useState(false)
 
   // DEBUG LOGS
   console.log(`Customers in table: ${customers}`)
@@ -312,7 +313,7 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  { loadingCustomers ? "Loading customers..." : "No results." }
                 </TableCell>
               </TableRow>
             )}
@@ -324,7 +325,10 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="space-x-2">
+        <div className="space-x-4">
+          <span>
+            Page { currentPageNumber } of { table.getPageCount() }
+          </span>
           <Button
             variant="outline"
             size="sm"
@@ -342,7 +346,9 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
             onClick={async () => {
               // if we can't go to the next page and there is a next page, fetch the next customers
               if (!table.getCanNextPage() && hasNextPage) {
+                setLoadingCustomers(true)
                 await getNextCustomers(cursor)
+                setLoadingCustomers(false)
                 setPageNumber(currentPageNumber + 1)
               }
               else {
