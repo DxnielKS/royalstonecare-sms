@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 
     const limit = 10
 
-    const query = await request.headers
+    const query = request.headers
 
     const starting_after = query.get('starting_from') ? query.get('starting_from') : ''
 
