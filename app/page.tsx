@@ -123,11 +123,11 @@ const Dashboard = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | null>(null)
   const [hasNextPage, setHasNextPage] = useState(true)
-  const [newMessageModalShowing, setNewMessageCustomersModalShowing] = useState(false);
   const [newCustomerModalShowing, setNewCustomerCustomersModalShowing] = useState(false);
   const [requestBeingMade, setRequestBeingMade] = useState(true)
 
   const UpdateCustomerList = (lastCursor: string | null) => {
+    console.log(`Making new request with cursor: ${lastCursor}`)
     useCustomers(lastCursor).then(async (customersResponse) => {
       setRequestBeingMade(true)
       setCustomers([...customers, ...customersResponse.customers])
@@ -193,7 +193,6 @@ const Dashboard = () => {
           }
         );
       }} />}
-      {newMessageModalShowing && <></>}
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex flex-col gap-2 justify-center items-center">
           {requestBeingMade && <div className="py-20 w-full"><Skeleton className="w-full h-[10rem]" /></div>}
@@ -218,7 +217,7 @@ const Dashboard = () => {
           } />}
           <div className="flex items-center justify-center space-x-4">
             <PrimaryButton label={'Add Customer(s)'} onClick={() => { setNewCustomerCustomersModalShowing(true) }} logo={<Users />} />
-            <PrimaryButton disabled={true} label={'New Message'} onClick={() => { setNewMessageCustomersModalShowing(true) }} logo={<Pen />} />
+            <PrimaryButton disabled={true} label={'New Message'} onClick={() => { }} logo={<Pen />} />
           </div>
         </div>
       </div>
