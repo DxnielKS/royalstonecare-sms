@@ -25,6 +25,7 @@ export const CustomerRequestResponseDataSchema = z.object({
 export type CustomerRequestResponseData = z.infer<typeof CustomerRequestResponseDataSchema>
 
 export const useCustomers = async (cursor: string | null): Promise<CustomerResponse> => {
+    console.log(`Hook making new request with cursor: ${cursor}`)
     const response = await fetch(`/api/customers`, {
         method: 'GET',
         headers: {
