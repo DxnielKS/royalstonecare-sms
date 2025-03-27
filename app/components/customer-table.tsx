@@ -82,12 +82,11 @@ interface CustomerDataTableProps {
   setPageNumber: (pageNumber: number) => void
   customers: Customer[]
   hasNextPage: boolean
-  cursor: string | null
-  getNextCustomers: (lastCursor: string | null) => void
+  getNextCustomers: () => void
   deleteCustomer: (customerId: string) => void
 }
 
-export function CustomerDataTable({currentPageNumber, setPageNumber, customers, hasNextPage, getNextCustomers, deleteCustomer, cursor }: CustomerDataTableProps) {
+export function CustomerDataTable({ currentPageNumber, setPageNumber, customers, hasNextPage, getNextCustomers, deleteCustomer }: CustomerDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -101,7 +100,6 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
   console.log(`Customers in table: ${customers}`)
   console.log(`Number of customers: ${customers.length}`)
   console.log(`Has next page: ${hasNextPage}`)
-  console.log(`Cursor: ${cursor}`)
   console.log(`Current page number: ${currentPageNumber}`)
 
   const columns: ColumnDef<Customer>[] = [
@@ -161,7 +159,7 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
       enableHiding: false,
       cell: ({ row }) => {
         const customer = row.original
-  
+
         return (
           <DropdownMenu >
             <DropdownMenuTrigger asChild>
@@ -313,7 +311,7 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  { loadingCustomers ? "Loading customers..." : "No results." }
+                  {loadingCustomers ? "Loading customers..." : "No results."}
                 </TableCell>
               </TableRow>
             )}
@@ -327,7 +325,7 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
         </div>
         <div className="space-x-4">
           <span>
-            Page { currentPageNumber } of { table.getPageCount() }
+            Page {currentPageNumber} of {table.getPageCount()}
           </span>
           <Button
             variant="outline"
@@ -347,7 +345,7 @@ export function CustomerDataTable({currentPageNumber, setPageNumber, customers, 
               // if we can't go to the next page and there is a next page, fetch the next customers
               if (!table.getCanNextPage() && hasNextPage) {
                 setLoadingCustomers(true)
-                await getNextCustomers(cursor)
+                await getNextCustomers()
                 setLoadingCustomers(false)
                 setPageNumber(currentPageNumber + 1)
               }

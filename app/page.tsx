@@ -126,7 +126,7 @@ const Dashboard = () => {
   const [newCustomerModalShowing, setNewCustomerCustomersModalShowing] = useState(false);
   const [requestBeingMade, setRequestBeingMade] = useState(true)
 
-  const UpdateCustomerList = (lastCursor: string | null) => {
+  const UpdateCustomerList = () => {
     console.log(`Making new request with cursor: ${lastCursor}`)
     useCustomers(lastCursor).then(async (customersResponse) => {
       setRequestBeingMade(true)
@@ -162,7 +162,7 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    UpdateCustomerList(lastCursor)
+    UpdateCustomerList()
   }, [])
 
 
@@ -196,7 +196,7 @@ const Dashboard = () => {
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex flex-col gap-2 justify-center items-center">
           {requestBeingMade && <div className="py-20 w-full"><Skeleton className="w-full h-[10rem]" /></div>}
-          {!requestBeingMade && <CustomerDataTable currentPageNumber={currentPageNumber} setPageNumber={setCurrentPageNumber} customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} cursor={lastCursor} deleteCustomer={
+          {!requestBeingMade && <CustomerDataTable currentPageNumber={currentPageNumber} setPageNumber={setCurrentPageNumber} customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} deleteCustomer={
             (customerId) => {
 
               toast.promise(
