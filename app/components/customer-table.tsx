@@ -36,6 +36,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table"
 import { z } from "zod"
+import { Skeleton } from "./ui/skeleton"
 
 export const NewCustomerSchema = z.object({
   name: z.string(),
@@ -94,13 +95,14 @@ export function CustomerDataTable({ currentPageNumber, setPageNumber, customers,
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-  const [loadingCustomers, setLoadingCustomers] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   // DEBUG LOGS
-  console.log(`Customers in table: ${customers}`)
-  console.log(`Number of customers: ${customers.length}`)
-  console.log(`Has next page: ${hasNextPage}`)
-  console.log(`Current page number: ${currentPageNumber}`)
+  // console.log(`Customers in table: ${customers}`)
+  // console.log(`Number of customers: ${customers.length}`)
+  // console.log(`Has next page: ${hasNextPage}`)
+  // console.log(`Current page number: ${currentPageNumber}`)
+  // console.log(`Making request: ${makingRequest}`)
 
   const columns: ColumnDef<Customer>[] = [
     {
@@ -309,9 +311,13 @@ export function CustomerDataTable({ currentPageNumber, setPageNumber, customers,
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center p-2"
                 >
-                  {loadingCustomers ? "Loading customers..." : "No results."}
+                  {loading ?
+
+                  <Skeleton className="max-w h-[5rem]"/>
+                  
+                  : "No results." }
                 </TableCell>
               </TableRow>
             )}
@@ -344,10 +350,9 @@ export function CustomerDataTable({ currentPageNumber, setPageNumber, customers,
             onClick={async () => {
               // if we can't go to the next page and there is a next page, fetch the next customers
               if (!table.getCanNextPage() && hasNextPage) {
-                setLoadingCustomers(true)
                 await getNextCustomers()
-                setLoadingCustomers(false)
                 setPageNumber(currentPageNumber + 1)
+                setLoading(true)
               }
               else {
                 table.nextPage()
