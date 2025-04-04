@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from "lucide-react"
 
 import { Button } from "@/app/components/ui/button"
 import { Checkbox } from "@/app/components/ui/checkbox"
@@ -85,9 +85,10 @@ interface CustomerDataTableProps {
   hasNextPage: boolean
   getNextCustomers: () => void
   deleteCustomer: (customerId: string) => void
+  openAddCustomerModal: (closed: boolean) => void
 }
 
-export function CustomerDataTable({ currentPageNumber, setPageNumber, customers, hasNextPage, getNextCustomers, deleteCustomer }: CustomerDataTableProps) {
+export function CustomerDataTable({ openAddCustomerModal, currentPageNumber, setPageNumber, customers, hasNextPage, getNextCustomers, deleteCustomer }: CustomerDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -233,8 +234,8 @@ export function CustomerDataTable({ currentPageNumber, setPageNumber, customers,
   })
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
+    <div className="w-full h-full flex flex-col">
+      <div className="flex items-center py-4 space-x-10"> {/* Controls */}
         <Input
           placeholder="Filter emails..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
@@ -243,6 +244,18 @@ export function CustomerDataTable({ currentPageNumber, setPageNumber, customers,
           }
           className="max-w-sm"
         />
+        <Button variant="outline"
+          onClick={() => {
+            openAddCustomerModal(true)
+          }
+          }
+        >
+          <Plus className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
+          Add
+          <kbd className="-me-1 ms-3 inline-flex h-5 max-h-full items-center rounded border border-border bg-background px-1 font-[inherit] text-[0.625rem] font-medium text-muted-foreground/70">
+            ⌘ +
+          </kbd>
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -270,7 +283,7 @@ export function CustomerDataTable({ currentPageNumber, setPageNumber, customers,
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border flex-1 overflow-auto"> {/* Table container */}
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -315,16 +328,16 @@ export function CustomerDataTable({ currentPageNumber, setPageNumber, customers,
                 >
                   {loading ?
 
-                  <Skeleton className="max-w h-[5rem]"/>
-                  
-                  : "No results." }
+                    <Skeleton className="max-w h-[5rem]" />
+
+                    : "No results."}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end space-x-2 py-4"> {/* Pagination */}
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.

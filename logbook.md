@@ -50,7 +50,11 @@ Need to centralise data so that KPI's and relevant information can be synthesise
 
 ### TODO
 !- [x] Implement deleting customers from database
-!- [/] move all customer data into twenty crm
+!- [x] move all customer data into twenty crm
 - Parivash is going to ask Quickbook to export all the contacts to a file that I can use
 
-- [ ] fix the customer table as pagination doesn't quite work, at least on the frontend
+- [x] fix the customer table as pagination doesn't quite work, at least on the frontend
+
+
+
+- [ ] make table scroll if the whole thing exceeds the height

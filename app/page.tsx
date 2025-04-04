@@ -1,15 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/app/components/ui/sidebar";
-import { LayoutDashboard, UserCog, Settings, LogOut, Pen } from "lucide-react";
+import { LayoutDashboard, UserCog, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/app/lib/utils";
-import { Users, User } from "lucide-react";
+import { User } from "lucide-react";
 import { Customer, CustomerCreationResponse, CustomerDataTable, CustomerDeletionResponse, NewCustomer } from "./components/customer-table";
 import { useCreateCustomer, useCustomers, useDeleteCustomer } from "./api/customers-api";
 import { AddCustomerModal } from "./components/AddCustomerModal";
-import { PrimaryButton } from "./components/ui/primary-button";
 import { Skeleton } from "./components/ui/skeleton";
 import { toast } from "sonner";
 import { Toaster } from "@/app/components/ui/toast";
@@ -127,7 +126,6 @@ const Dashboard = () => {
   const [requestBeingMade, setRequestBeingMade] = useState(true)
 
   const UpdateCustomerList = () => {
-    // console.log(`Making new request with cursor: ${lastCursor}`)
     useCustomers(lastCursor).then(async (customersResponse) => {
       setRequestBeingMade(true)
       const dedupedCustomers = customersResponse.customers.filter((customer) => {
@@ -196,35 +194,29 @@ const Dashboard = () => {
           }
         );
       }} />}
-      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        <div className="flex flex-col gap-2 justify-center items-center">
-          {requestBeingMade && <div className="py-20 w-full">
-            <Skeleton className="w-full h-[10rem]" />
-          </div>}
-          {!requestBeingMade && <CustomerDataTable currentPageNumber={currentPageNumber} setPageNumber={setCurrentPageNumber} customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} deleteCustomer={
-            (customerId) => {
+      <div className="p-8 rounded-l-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
+        {requestBeingMade &&
+          <Skeleton className="w-full h-[100vh]" />
+        }
+        {!requestBeingMade && <CustomerDataTable openAddCustomerModal={setNewCustomerCustomersModalShowing} currentPageNumber={currentPageNumber} setPageNumber={setCurrentPageNumber} customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} deleteCustomer={
+          (customerId) => {
 
-              toast.promise(
-                DeleteCustomer(customerId).then((result) => {
-                  if (result.success) {
-                    return result;
-                  } else {
-                    throw new Error("Failed to delete customer");
-                  }
-                }),
-                {
-                  loading: "Deleting customer...",
-                  success: "Customer deleted",
-                  error: "Failed to delete customer",
+            toast.promise(
+              DeleteCustomer(customerId).then((result) => {
+                if (result.success) {
+                  return result;
+                } else {
+                  throw new Error("Failed to delete customer");
                 }
-              );
-            }
-          } />}
-          <div className="flex items-center justify-center space-x-4">
-            <PrimaryButton label={'Add Customer(s)'} onClick={() => { setNewCustomerCustomersModalShowing(true) }} logo={<Users />} />
-            <PrimaryButton disabled={true} label={'New Message'} onClick={() => { }} logo={<Pen />} />
-          </div>
-        </div>
+              }),
+              {
+                loading: "Deleting customer...",
+                success: "Customer deleted",
+                error: "Failed to delete customer",
+              }
+            );
+          }
+        } />}
       </div>
     </div>
   );

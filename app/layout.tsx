@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Royal Stone Care Marketing",
-  description: "Royal Stone Care Marketing",
+  title: "RSC Marketing",
+  description: "Royal Stone Care SMS and Email Marketing",
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-blue-950`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-neutral-900`}
       >
         {children}
       </body>
