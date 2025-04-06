@@ -86,9 +86,10 @@ interface CustomerDataTableProps {
   getNextCustomers: () => void
   deleteCustomer: (customerId: string) => void
   openAddCustomerModal: (closed: boolean) => void
+  externalLoading ?: boolean
 }
 
-export function CustomerDataTable({ openAddCustomerModal, currentPageNumber, setPageNumber, customers, hasNextPage, getNextCustomers, deleteCustomer }: CustomerDataTableProps) {
+export function CustomerDataTable({ externalLoading, openAddCustomerModal, currentPageNumber, setPageNumber, customers, hasNextPage, getNextCustomers, deleteCustomer }: CustomerDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -96,7 +97,7 @@ export function CustomerDataTable({ openAddCustomerModal, currentPageNumber, set
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(externalLoading)
 
   // DEBUG LOGS
   // console.log(`Customers in table: ${customers}`)
@@ -320,17 +321,56 @@ export function CustomerDataTable({ openAddCustomerModal, currentPageNumber, set
                   ))}
                 </TableRow>
               ))
+            ) : loading ? (
+              <>
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center p-2"
+                  >
+                    <Skeleton className="max-w h-full" />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center p-2"
+                  >
+                    <Skeleton className="max-w h-full" />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center p-2"
+                  >
+                    <Skeleton className="max-w h-full" />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center p-2"
+                  >
+                    <Skeleton className="max-w h-full" />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center p-2"
+                  >
+                    <Skeleton className="max-w h-full" />
+                  </TableCell>
+                </TableRow>
+              </>
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center p-2"
                 >
-                  {loading ?
-
-                    <Skeleton className="max-w h-[5rem]" />
-
-                    : "No results."}
+                  No results.
                 </TableCell>
               </TableRow>
             )}
@@ -378,7 +418,7 @@ export function CustomerDataTable({ openAddCustomerModal, currentPageNumber, set
           </Button>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 export default { CustomerDataTable };

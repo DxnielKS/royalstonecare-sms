@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/app/components/ui/sidebar";
-import { LayoutDashboard, UserCog, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, UserCog, Settings, LogOut, Users, Mail } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/app/lib/utils";
@@ -9,7 +9,6 @@ import { User } from "lucide-react";
 import { Customer, CustomerCreationResponse, CustomerDataTable, CustomerDeletionResponse, NewCustomer } from "./components/customer-table";
 import { useCreateCustomer, useCustomers, useDeleteCustomer } from "./api/customers-api";
 import { AddCustomerModal } from "./components/AddCustomerModal";
-import { Skeleton } from "./components/ui/skeleton";
 import { toast } from "sonner";
 import { Toaster } from "@/app/components/ui/toast";
 
@@ -24,6 +23,20 @@ export default function Home() {
       href: "#",
       icon: (
         <LayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Customers",
+      href: "#",
+      icon: (
+        <Users className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "SMS Campaigns",
+      href: "#",
+      icon: (
+        <Mail className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -64,7 +77,7 @@ export default function Home() {
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label !== 'Dashboard' ? 'cursor-not-allowed opacity-10' : ''} />
+                <SidebarLink key={idx} link={link} className={USER_SETTINGS_AND_ACCOUNTS_DISABLED && link.label !== 'Customers' ? 'cursor-not-allowed opacity-10' : ''} />
               ))}
             </div>
           </div>
@@ -117,7 +130,6 @@ const LogoIcon = () => {
 
 
 const Dashboard = () => {
-  // Fetch customers
   const [customers, setCustomers] = useState<Customer[]>([])
   const [currentPageNumber, setCurrentPageNumber] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | null>(null)
@@ -195,10 +207,7 @@ const Dashboard = () => {
         );
       }} />}
       <div className="p-8 rounded-l-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        {requestBeingMade &&
-          <Skeleton className="w-full h-[100vh]" />
-        }
-        {!requestBeingMade && <CustomerDataTable openAddCustomerModal={setNewCustomerCustomersModalShowing} currentPageNumber={currentPageNumber} setPageNumber={setCurrentPageNumber} customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} deleteCustomer={
+        {<CustomerDataTable externalLoading={requestBeingMade} openAddCustomerModal={setNewCustomerCustomersModalShowing} currentPageNumber={currentPageNumber} setPageNumber={setCurrentPageNumber} customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} deleteCustomer={
           (customerId) => {
 
             toast.promise(
