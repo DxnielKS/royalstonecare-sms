@@ -4,7 +4,7 @@ import { Modal } from "./ui/modal"
 import { PrimaryButton } from "./ui/primary-button"
 import { Save } from "lucide-react"
 import { useState } from "react"
-import { 
+import {
     Select,
     SelectContent,
     SelectItem,

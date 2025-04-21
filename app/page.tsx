@@ -4,7 +4,7 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/app/components/ui/sidebar";
 import { LayoutDashboard, UserCog, Settings, LogOut, Users, Mail } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { User } from "lucide-react";
 import { Customer, CustomerCreationResponse, CustomerDataTable, CustomerDeletionResponse, NewCustomer } from "./components/customer-table";
 import { useCreateCustomer, useCustomers, useDeleteCustomer } from "./api/customers-api";
