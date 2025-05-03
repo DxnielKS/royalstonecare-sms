@@ -22,42 +22,42 @@ export default function Home() {
       label: "Dashboard",
       href: "#",
       icon: (
-        <LayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <LayoutDashboard className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Customers",
       href: "#",
       icon: (
-        <Users className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <Users className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "SMS Campaigns",
       href: "#",
       icon: (
-        <Mail className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <Mail className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Profile",
       href: "#",
       icon: (
-        <UserCog className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <UserCog className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Settings",
       href: "#",
       icon: (
-        <Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <Settings className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Logout",
       href: "#",
       icon: (
-        <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <LogOut className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
   ];
@@ -67,7 +67,7 @@ export default function Home() {
   return (
     <div
       className={cn(
-        "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
+        "rounded-md flex flex-col md:flex-row bg-gray-100 w-full flex-1 mx-auto border border-neutral-200 overflow-hidden",
         "h-screen"
       )}
     >
@@ -109,7 +109,7 @@ const Logo = () => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
+        className="font-medium text-black whitespace-pre"
       >
         Royal Stone Care
       </motion.span>
@@ -206,7 +206,7 @@ const Dashboard = () => {
           }
         );
       }} />}
-      <div className="p-8 rounded-l-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
+      <div className="p-8 rounded-l-2xl border border-neutral-200 bg-white flex flex-col gap-2 flex-1 w-full h-full">
         {<CustomerDataTable externalLoading={requestBeingMade} openAddCustomerModal={setNewCustomerCustomersModalShowing} currentPageNumber={currentPageNumber} setPageNumber={setCurrentPageNumber} customers={customers} hasNextPage={hasNextPage} getNextCustomers={UpdateCustomerList} deleteCustomer={
           (customerId) => {
 

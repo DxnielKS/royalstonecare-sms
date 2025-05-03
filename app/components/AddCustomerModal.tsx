@@ -1,8 +1,7 @@
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Modal } from "./ui/modal"
-import { PrimaryButton } from "./ui/primary-button"
-import { Save } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useState } from "react"
 import {
     Select,
@@ -11,6 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "./ui/select"
+import { Button } from "./ui/button"
 
 interface AddCustomerModalProps {
     onClose: (closed: boolean) => void
@@ -106,7 +106,9 @@ export function AddCustomerModal({ onClose, onSubmit }: AddCustomerModalProps) {
     }
 
     return (
-        <Modal onClose={onClose} button={<PrimaryButton label="Save" onClick={handleSubmit} logo={<Save />} />}>
+        <Modal onClose={onClose} button={<Button onClick={handleSubmit}><Plus className="mr-2" size={20}/>Add <kbd className="-me-1 ms-3 inline-flex h-5 max-h-full items-center rounded border border-border bg-background px-1 font-[inherit] text-[0.625rem] font-medium text-muted-foreground/70">
+            ↵
+        </kbd></Button>}>
             <div className="space-y-4">
                 <div>
                     <Label>Customer Name</Label>

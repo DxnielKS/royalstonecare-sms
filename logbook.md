@@ -57,4 +57,18 @@ Need to centralise data so that KPI's and relevant information can be synthesise
 
 
 
-- [ ] make table scroll if the whole thing exceeds the height
+- [x] make table scroll if the whole thing exceeds the height
+
+
+
+
+
+## TODO 22/4/25
+- [ ] fix the colours on the table
+- [ ] make the dropdowns have an opaque and z above background
+- [ ] implement sms campaigns to engage existing customers
+    - [ ] make database to store stuff
+
+
+### Design for campaigns
+- Need to 

@@ -86,7 +86,7 @@ interface CustomerDataTableProps {
   getNextCustomers: () => void
   deleteCustomer: (customerId: string) => void
   openAddCustomerModal: (closed: boolean) => void
-  externalLoading ?: boolean
+  externalLoading?: boolean
 }
 
 export function CustomerDataTable({ externalLoading, openAddCustomerModal, currentPageNumber, setPageNumber, customers, hasNextPage, getNextCustomers, deleteCustomer }: CustomerDataTableProps) {

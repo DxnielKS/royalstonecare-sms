@@ -4,7 +4,6 @@ import animatePlugin from "tailwindcss-animate";
 import containerQueries from "@tailwindcss/container-queries";
 
 const config: Config = {
-  darkMode: ["class"],
   content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}", "components/ui/*.{ts,tsx}"],
   theme: {
     extend: {
