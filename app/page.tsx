@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/app/components/ui/sidebar";
-import { LayoutDashboard, UserCog, Settings, LogOut, Users, Mail } from "lucide-react";
+import { LayoutDashboard, Users, Mail, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,13 @@ export default function Home() {
       ),
     },
     {
+      label: "Leads",
+      href: "/#",
+      icon: (
+        <UserSearch className="text-neutral-700 h-5 w-5 flex-shrink-0" />
+      )
+    },
+    {
       label: "Customers",
       href: "#",
       icon: (
@@ -39,27 +46,27 @@ export default function Home() {
         <Mail className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
-    {
-      label: "Profile",
-      href: "#",
-      icon: (
-        <UserCog className="text-neutral-700 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Settings",
-      href: "#",
-      icon: (
-        <Settings className="text-neutral-700 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Logout",
-      href: "#",
-      icon: (
-        <LogOut className="text-neutral-700 h-5 w-5 flex-shrink-0" />
-      ),
-    },
+    // {
+    //   label: "Profile",
+    //   href: "#",
+    //   icon: (
+    //     <UserCog className="text-neutral-700 h-5 w-5 flex-shrink-0" />
+    //   ),
+    // },
+    // {
+    //   label: "Settings",
+    //   href: "#",
+    //   icon: (
+    //     <Settings className="text-neutral-700 h-5 w-5 flex-shrink-0" />
+    //   ),
+    // },
+    // {
+    //   label: "Logout",
+    //   href: "#",
+    //   icon: (
+    //     <LogOut className="text-neutral-700 h-5 w-5 flex-shrink-0" />
+    //   ),
+    // },
   ];
 
   const [open, setOpen] = useState(false);
